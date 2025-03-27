@@ -154,8 +154,8 @@ public class PatternManager {
             }
         }
 
-        DynamicTexture dynamicTexture = new DynamicTexture(heartImage);
         ResourceLocation textureLocation = ResourceLocation.fromNamespaceAndPath(PartialHearts.MOD_ID, "dynamic_heart_texture");
+        DynamicTexture dynamicTexture = new DynamicTexture(textureLocation::toString, heartImage);
         Minecraft.getInstance().getTextureManager().register(textureLocation, dynamicTexture);
         guiGraphics.blit(RenderType::guiTextured, textureLocation, heartX, heartY, 0, 0, 9, 9, 9, 9, 9, 9);
 

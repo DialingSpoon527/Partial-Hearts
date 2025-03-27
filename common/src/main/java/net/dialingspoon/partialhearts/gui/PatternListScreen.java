@@ -7,10 +7,7 @@ import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.AbstractWidget;
-import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.components.ContainerObjectSelectionList;
-import net.minecraft.client.gui.components.WidgetSprites;
+import net.minecraft.client.gui.components.*;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
@@ -308,9 +305,7 @@ public class PatternListScreen extends Screen {
 
         @Override
         protected void renderWidget(GuiGraphics guiGraphics, int i, int j, float f) {
-            RenderSystem.disableDepthTest();
             guiGraphics.blitSprite(RenderType::guiTextured, this.sprites.get(patternList.getSelected() == parent, this.isHovered), this.getX(), this.getY(), this.width, this.height);
-            RenderSystem.enableDepthTest();
         }
 
         @Override public void onClick(double d, double e) {
