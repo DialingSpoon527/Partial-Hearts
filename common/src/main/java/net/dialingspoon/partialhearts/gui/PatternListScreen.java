@@ -60,6 +60,7 @@ public class PatternListScreen extends Screen {
 
     @Override
     public void render(GuiGraphics gg, int mouseX, int mouseY, float partialTicks) {
+        this.renderBackground(gg);
         super.render(gg, mouseX, mouseY, partialTicks);
         gg.drawCenteredString(this.font, this.title, this.width / 2, 10, 0xFFFFFF);
     }
@@ -302,7 +303,7 @@ public class PatternListScreen extends Screen {
         }
 
         @Override
-        protected void renderWidget(GuiGraphics guiGraphics, int i, int j, float f) {
+        public void renderWidget(GuiGraphics guiGraphics, int i, int j, float f) {
             RenderSystem.disableDepthTest();
             guiGraphics.blit(texture, this.getX(), this.getY(), this.width, this.height, this.isHovered ? 20 : 0, patternList.getSelected() == parent ? 20 : 0, 20, 20, 64, 64);
             RenderSystem.enableDepthTest();
