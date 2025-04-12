@@ -1,6 +1,7 @@
 package net.dialingspoon.partialhearts.gui;
 
 import net.dialingspoon.partialhearts.PartialHearts;
+import net.dialingspoon.partialhearts.PatternManager;
 import net.dialingspoon.partialhearts.mixin.ScreenAccessor;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiGraphics;
@@ -27,7 +28,7 @@ public class PatternEditScreen extends Screen {
 
     private final int[] oldData;
 
-    private final List<ResourceLocation> backgroundSprites = new ArrayList<>();
+    private final List<PatternManager.HeartType> backgroundSprites = new ArrayList<>();
     private int spriteIndex = 0;
 
     private EditBox nameField;
@@ -55,7 +56,7 @@ public class PatternEditScreen extends Screen {
         topOffset = 50;
         leftOffset = (this.width - (GRID_SIZE * BUTTON_SIZE)) / 2;
 
-        ImageWidget infoSprite = ImageWidget.sprite(5, 5, new ResourceLocation(PartialHearts.MOD_ID, "info"));
+        ImageWidget infoSprite = new ImageWidget(5, 5, new ResourceLocation(PartialHearts.MOD_ID, "textures/gui/sprites/info.png"));
         infoSprite.setPosition((font.width(title) + width) / 2 + 2, 2);
         infoSprite.setTooltip(Tooltip.create(Component.translatable("pattern_edit_screen.info")));
         this.addRenderableWidget(infoSprite);
@@ -64,11 +65,11 @@ public class PatternEditScreen extends Screen {
         this.nameField.setMaxLength(100);
         this.addRenderableWidget(this.nameField);
 
-        WidgetSprites sprites = new WidgetSprites(new ResourceLocation(PartialHearts.MOD_ID, "scroll_left"), new ResourceLocation(PartialHearts.MOD_ID, "scroll_left_highlighted"));
-        this.addRenderableWidget(new ArrowButton(width / 2 - 6 * BUTTON_SIZE - 32, topOffset + 4 * BUTTON_SIZE - 16, 32, 32, sprites, b -> incrementSpriteIndex()));
+        this.addRenderableWidget(new ArrowButton(width / 2 - 6 * BUTTON_SIZE - 32, topOffset + 4 * BUTTON_SIZE - 16, 32, 32,
+                new ResourceLocation(PartialHearts.MOD_ID, "textures/gui/sprites/scroll_left.png"), b -> incrementSpriteIndex()));
 
-        sprites = new WidgetSprites(new ResourceLocation(PartialHearts.MOD_ID, "scroll_right"), new ResourceLocation(PartialHearts.MOD_ID, "scroll_right_highlighted"));
-        this.addRenderableWidget(new ArrowButton(width / 2 + 6 * BUTTON_SIZE, topOffset + 4 * BUTTON_SIZE - 16, 32, 32, sprites, b -> decrementSpriteIndex()));
+        this.addRenderableWidget(new ArrowButton(width / 2 + 6 * BUTTON_SIZE, topOffset + 4 * BUTTON_SIZE - 16, 32, 32,
+                new ResourceLocation(PartialHearts.MOD_ID, "textures/gui/sprites/scroll_right.png"), b -> decrementSpriteIndex()));
 
         this.buttons = new ArrayList<>();
         for (int y = 0; y < GRID_SIZE; y++) {
@@ -101,7 +102,7 @@ public class PatternEditScreen extends Screen {
             if (type != Gui.HeartType.CONTAINER) {
                 for (boolean hardcore : booleans) {
                     for (boolean blinking : booleans) {
-                        ResourceLocation sprite = type.getSprite(hardcore, false, blinking);
+                        PatternManager.HeartType sprite = new PatternManager.HeartType(type, hardcore, false, blinking);
                         if (!backgroundSprites.contains(sprite)) backgroundSprites.add(sprite);
                     }
                 }
@@ -284,8 +285,9 @@ public class PatternEditScreen extends Screen {
 
     @Override
     public void render(GuiGraphics gg, int mouseX, int mouseY, float partialTicks) {
-        this.renderBackground(gg, mouseX, mouseY, partialTicks);
-        gg.blitSprite(backgroundSprites.get(spriteIndex), leftOffset, topOffset, GRID_SIZE*BUTTON_SIZE, GRID_SIZE*BUTTON_SIZE);
+        this.renderBackground(gg);
+        PatternManager.HeartType heartType = backgroundSprites.get(spriteIndex);
+        gg.blit(new ResourceLocation("textures/gui/icons.png"), leftOffset, topOffset, GRID_SIZE*BUTTON_SIZE, GRID_SIZE*BUTTON_SIZE, heartType.heartType.getX(heartType.half, heartType.blinking), heartType.hardcore ? 45 : 0, 9, 9, 256, 256);
 
         for (Renderable renderable : ((ScreenAccessor)this).getRenderables()) {
             renderable.render(gg, mouseX, mouseY, partialTicks);
@@ -295,11 +297,11 @@ public class PatternEditScreen extends Screen {
     }
 
     public class ArrowButton extends Button {
-        private final WidgetSprites sprites;
+        private final ResourceLocation texture;
 
-        public ArrowButton(int i, int j, int k, int l, WidgetSprites widgetSprites, Button.OnPress onPress) {
+        public ArrowButton(int i, int j, int k, int l, ResourceLocation texture, Button.OnPress onPress) {
             super(i, j, k, l, CommonComponents.EMPTY, onPress, DEFAULT_NARRATION);
-            this.sprites = widgetSprites;
+            this.texture = texture;
         }
 
         @Override
@@ -309,8 +311,7 @@ public class PatternEditScreen extends Screen {
 
         @Override
         public void renderWidget(GuiGraphics guiGraphics, int i, int j, float f) {
-            ResourceLocation resourceLocation = this.sprites.get(this.isActive(), this.isHovered && mouseDown);
-            guiGraphics.blitSprite(resourceLocation, this.getX(), this.getY(), this.width, this.height);
+            guiGraphics.blit(texture, this.getX(), this.getY(), this.width, this.height, 0, (this.isHovered && mouseDown) ? 32 : 0, 32, 32, 32, 64);
         }
     }
 

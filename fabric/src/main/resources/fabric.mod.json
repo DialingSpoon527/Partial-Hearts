@@ -14,7 +14,6 @@
   "license": "MIT",
   "icon": "assets/partialhearts/icon.png",
   "environment": "client",
-  "accessWidener": "partialhearts.accesswidener",
   "entrypoints": {
     "client": [
       "net.dialingspoon.partialhearts.fabric.PartialHeartsFabric"
@@ -29,8 +28,8 @@
   ],
   "depends": {
     "fabricloader": ">=0.16.9",
-    "minecraft": ">1.20.1 <1.20.3",
-    "java": ">=17",
+    "minecraft": ">1.20 <1.20.2",
+    "java": ">=15",
     "fabric-api": "*"
   },
   "custom": {

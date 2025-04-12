@@ -4,11 +4,12 @@
   "compatibilityLevel": "JAVA_17",
   "minVersion": "0.8",
   "client": [
-    "ColoredHeartsSupplierMixin",
     "ColorfulHeartRendererMixin",
-    "ColorfulSpriteHeartDrawingMixin",
+    "ColorfulHeartUtilsMixin",
+    "ColorfulRenderUtilsMixin",
     "GuiMixin",
-    "HeartAccessor",
+    "HeartMixin",
+    "RenderSystemMixin",
     "ScreenAccessor"
   ],
   "injectors": {

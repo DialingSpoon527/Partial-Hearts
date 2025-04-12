@@ -1,5 +1,5 @@
 modLoader = "javafml"
-loaderVersion = "[48,)"
+loaderVersion = "[47,)"
 issueTrackerURL = "https://github.com/19Phin/Partial-Hearts/issues"
 license = "MIT"
 
@@ -16,13 +16,13 @@ logoFile = "assets/partialhearts/icon.png"
 [[dependencies.partialhearts]]
 modId = "forge"
 mandatory = true
-versionRange = "(47,49)"
+versionRange = "(46,48)"
 ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.partialhearts]]
 modId = "minecraft"
 mandatory = true
-versionRange = "(1.20.1,1.20.3)"
+versionRange = "(1.20,1.20.2)"
 ordering = "NONE"
 side = "BOTH"

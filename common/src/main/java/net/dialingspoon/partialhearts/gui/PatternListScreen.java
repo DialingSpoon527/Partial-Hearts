@@ -2,6 +2,7 @@ package net.dialingspoon.partialhearts.gui;
 
 import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.systems.RenderSystem;
+import net.dialingspoon.partialhearts.PartialHearts;
 import net.dialingspoon.partialhearts.PatternManager;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
@@ -10,7 +11,6 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.ContainerObjectSelectionList;
-import net.minecraft.client.gui.components.WidgetSprites;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
@@ -21,6 +21,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class PatternListScreen extends Screen {
 
@@ -78,7 +79,7 @@ public class PatternListScreen extends Screen {
     @Override
     public void onClose() {
         PatternManager.savePatterns(patterns, selectedPatternName, patterns.get(selectedPatternName));
-        this.minecraft.setScreen(null);
+        this.minecraft.setScreen(parent);
     }
 
     public void onPatternSaved(String oldName, String newName, int[] newData) {
@@ -156,7 +157,7 @@ public class PatternListScreen extends Screen {
             List<Map.Entry<String, int[]>> sortedEntries = patterns.entrySet().stream()
                     .filter(e -> !e.getKey().equals(PatternManager.ORIGINAL_PATTERN) && !e.getKey().equals(PatternManager.RANDOM_PATTERN))
                     .sorted(Map.Entry.comparingByKey())
-                    .toList();
+                    .collect(Collectors.toList());
 
             for (Map.Entry<String, int[]> entry : sortedEntries) {
                 addEntry(new PatternEntry(entry.getKey(), entry.getValue(), false));
@@ -234,7 +235,7 @@ public class PatternListScreen extends Screen {
             }
         }
 
-        protected static void drawScrollableText(GuiGraphics context, Font textRenderer, Component text, int startX, int startY, int width, int height, int color) {
+        protected void drawScrollableText(GuiGraphics context, Font textRenderer, Component text, int startX, int startY, int width, int height, int color) {
             int endX = startX + width;
             int endY = startY + height;
             int i = textRenderer.width(text);
@@ -287,12 +288,7 @@ public class PatternListScreen extends Screen {
     }
 
     public class CheckButton extends AbstractWidget {
-        private final WidgetSprites sprites = new WidgetSprites(
-                new ResourceLocation("widget/checkbox_selected"),
-                new ResourceLocation("widget/checkbox"),
-                new ResourceLocation("widget/checkbox_selected_highlighted"),
-                new ResourceLocation("widget/checkbox_highlighted")
-        );
+        private final ResourceLocation texture = new ResourceLocation(PartialHearts.MOD_ID, "textures/gui/sprites/checkbox.png");
         private final PatternEntry parent;
 
         public CheckButton(int i, int j, int k, PatternEntry parent) {
@@ -308,7 +304,7 @@ public class PatternListScreen extends Screen {
         @Override
         protected void renderWidget(GuiGraphics guiGraphics, int i, int j, float f) {
             RenderSystem.disableDepthTest();
-            guiGraphics.blitSprite(this.sprites.get(patternList.getSelected() == parent, this.isHovered), this.getX(), this.getY(), this.width, this.height);
+            guiGraphics.blit(texture, this.getX(), this.getY(), this.width, this.height, this.isHovered ? 20 : 0, patternList.getSelected() == parent ? 20 : 0, 20, 20, 64, 64);
             RenderSystem.enableDepthTest();
         }
 
