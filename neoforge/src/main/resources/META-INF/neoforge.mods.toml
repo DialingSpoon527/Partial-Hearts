@@ -16,14 +16,14 @@ logoFile = "assets/partialhearts/icon.png"
 [[dependencies.partialhearts]]
 modId = "neoforge"
 type = "required"
-versionRange = "(21.4,)"
+versionRange = "(21.5,)"
 ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.partialhearts]]
 modId = "minecraft"
 type = "required"
-versionRange = "(1.21.4,)"
+versionRange = "(1.21.5,)"
 ordering = "NONE"
 side = "BOTH"
 
