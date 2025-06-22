@@ -1,18 +1,20 @@
 package net.dialingspoon.partialhearts.gui;
 
 import com.google.common.collect.ImmutableList;
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.dialingspoon.partialhearts.PatternManager;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.*;
+import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.ContainerObjectSelectionList;
+import net.minecraft.client.gui.components.WidgetSprites;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -58,7 +60,7 @@ public class PatternListScreen extends Screen {
     @Override
     public void render(GuiGraphics gg, int mouseX, int mouseY, float partialTicks) {
         super.render(gg, mouseX, mouseY, partialTicks);
-        gg.drawCenteredString(this.font, this.title, this.width / 2, 10, 0xFFFFFF);
+        gg.drawCenteredString(this.font, this.title, this.width / 2, 10, -1);
     }
 
     @Override
@@ -210,7 +212,7 @@ public class PatternListScreen extends Screen {
 
         @Override
         public void render(GuiGraphics gg, int index, int top, int left, int rowWidth, int rowHeight, int mouseX, int mouseY, boolean hovered, float partialTick) {
-            drawScrollableText(gg, font, Component.literal(name), left, top + 5, 160, 20, 0xFFFFFF);
+            drawScrollableText(gg, font, Component.literal(name), left, top + 5, 160, 20, -1);
 
             left += 170;
             selectButton.setPosition(left, top);
@@ -305,7 +307,7 @@ public class PatternListScreen extends Screen {
 
         @Override
         protected void renderWidget(GuiGraphics guiGraphics, int i, int j, float f) {
-            guiGraphics.blitSprite(RenderType::guiTextured, this.sprites.get(patternList.getSelected() == parent, this.isHovered), this.getX(), this.getY(), this.width, this.height);
+            guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, this.sprites.get(patternList.getSelected() == parent, this.isHovered), this.getX(), this.getY(), this.width, this.height);
         }
 
         @Override public void onClick(double d, double e) {
