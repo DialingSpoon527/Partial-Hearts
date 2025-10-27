@@ -8,6 +8,9 @@ import net.minecraft.client.gui.components.*;
 import net.minecraft.client.gui.narration.NarratedElementType;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
@@ -190,15 +193,15 @@ public class PatternEditScreen extends Screen {
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+    public boolean mouseClicked(MouseButtonEvent mouseButtonEvent, boolean bl) {
         this.mouseDown = true;
-        return super.mouseClicked(mouseX, mouseY, button);
+        return super.mouseClicked(mouseButtonEvent, bl);
     }
 
     @Override
-    public boolean mouseReleased(double mouseX, double mouseY, int button) {
+    public boolean mouseReleased(MouseButtonEvent mouseButtonEvent) {
         this.mouseDown = false;
-        return super.mouseReleased(mouseX, mouseY, button);
+        return super.mouseReleased(mouseButtonEvent);
     }
 
     @Override
@@ -212,7 +215,7 @@ public class PatternEditScreen extends Screen {
                     finalizeNumber();
                     hoveredButton = btn;
                     if (mouseDown) {
-                        btn.onClick(mouseX, mouseY);
+                        btn.acceptPress();
                     }
                     currentInput = btn.isPressed() ? String.valueOf(btn.getValue()) : "";
                 }
@@ -238,18 +241,18 @@ public class PatternEditScreen extends Screen {
     }
 
     @Override
-    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+    public boolean keyPressed(KeyEvent keyEvent) {
         if (hoveredButton != null) {
-            if (keyCode >= GLFW.GLFW_KEY_0 && keyCode <= GLFW.GLFW_KEY_9) {
+            if (keyEvent.scancode() >= GLFW.GLFW_KEY_0 && keyEvent.scancode() <= GLFW.GLFW_KEY_9) {
                 nameField.setFocused(false);
-                int digit = keyCode - GLFW.GLFW_KEY_0;
+                int digit = keyEvent.scancode() - GLFW.GLFW_KEY_0;
                 handleDigitInput(digit);
 
                 return true;
             }
         }
 
-        return super.keyPressed(keyCode, scanCode, modifiers);
+        return super.keyPressed(keyEvent);
     }
 
     private void handleDigitInput(int digit) {
@@ -286,7 +289,7 @@ public class PatternEditScreen extends Screen {
     @Override
     public void render(GuiGraphics gg, int mouseX, int mouseY, float partialTicks) {
         this.renderBackground(gg, mouseX, mouseY, partialTicks);
-        gg.blitSprite(RenderType::guiTextured, backgroundSprites.get(spriteIndex), leftOffset, topOffset, GRID_SIZE*BUTTON_SIZE, GRID_SIZE*BUTTON_SIZE);
+        gg.blitSprite(RenderPipelines.GUI_TEXTURED, backgroundSprites.get(spriteIndex), leftOffset, topOffset, GRID_SIZE*BUTTON_SIZE, GRID_SIZE*BUTTON_SIZE);
 
         for (Renderable renderable : ((ScreenAccessor)this).getRenderables()) {
             renderable.render(gg, mouseX, mouseY, partialTicks);
@@ -311,7 +314,7 @@ public class PatternEditScreen extends Screen {
         @Override
         public void renderWidget(GuiGraphics guiGraphics, int i, int j, float f) {
             ResourceLocation resourceLocation = this.sprites.get(this.isActive(), this.isHovered && mouseDown);
-            guiGraphics.blitSprite(RenderType::guiTextured, resourceLocation, this.getX(), this.getY(), this.width, this.height);
+            guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, resourceLocation, this.getX(), this.getY(), this.width, this.height);
         }
     }
 
@@ -325,7 +328,12 @@ public class PatternEditScreen extends Screen {
         }
 
         @Override
-        public void onClick(double mouseX, double mouseY) {
+        public void onClick(MouseButtonEvent mouseButtonEvent, boolean bl) {
+            super.onClick(mouseButtonEvent, bl);
+            acceptPress();
+        }
+
+        public void acceptPress() {
             this.onPress.accept(this);
         }
 

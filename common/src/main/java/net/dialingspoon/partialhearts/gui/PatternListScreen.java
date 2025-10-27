@@ -15,6 +15,8 @@ import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
@@ -30,6 +32,9 @@ public class PatternListScreen extends Screen {
     private String selectedPatternName = PatternManager.getSelectedPatternName();
     private final Map<String, int[]> patterns;
     private PatternList patternList;
+
+    public int mouseX;
+    public int mouseY;
 
     public PatternListScreen(Screen parent) {
         super(Component.translatable("patternlist.title"));
@@ -65,8 +70,8 @@ public class PatternListScreen extends Screen {
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        boolean result = super.mouseClicked(mouseX, mouseY, button);
+    public boolean mouseClicked(MouseButtonEvent mouseButtonEvent, boolean doubled) {
+        boolean result = super.mouseClicked(mouseButtonEvent, doubled);
 
         PatternEntry selected = this.patternList.getSelected();
         if (selected != null) {
@@ -74,6 +79,13 @@ public class PatternListScreen extends Screen {
         }
 
         return result;
+    }
+
+    @Override
+    public void mouseMoved(double mouseX, double mouseY) {
+        this.mouseX = (int) mouseX;
+        this.mouseY = (int) mouseY;
+        super.mouseMoved(mouseX, mouseY);
     }
 
     @Override
@@ -212,26 +224,26 @@ public class PatternListScreen extends Screen {
         }
 
         @Override
-        public void render(GuiGraphics gg, int index, int top, int left, int rowWidth, int rowHeight, int mouseX, int mouseY, boolean hovered, float partialTick) {
-            drawScrollableText(gg, font, Component.literal(name), left, top + 5, 160, 20, 0xFFFFFF);
+        public void renderContent(GuiGraphics guiGraphics, int x, int y, boolean bl, float deltaTicks) {
+            drawScrollableText(guiGraphics, font, Component.literal(name), x, y + 5, 160, 20, 0xFFFFFF);
 
-            left += 170;
-            selectButton.setPosition(left, top);
-            selectButton.render(gg, mouseX, mouseY, partialTick);
+            x += 170;
+            selectButton.setPosition(x, y);
+            selectButton.render(guiGraphics, mouseX, mouseY, deltaTicks);
 
-            left += 30;
+            x += 30;
 
             if (!special) {
-                this.editButton.setPosition(left, top);
-                this.editButton.render(gg, mouseX, mouseY, partialTick);
-                left += 45;
+                this.editButton.setPosition(x, y);
+                this.editButton.render(guiGraphics, mouseX, mouseY, deltaTicks);
+                x += 45;
 
-                this.duplicateButton.setPosition(left, top);
-                this.duplicateButton.render(gg, mouseX, mouseY, partialTick);
-                left += 65;
+                this.duplicateButton.setPosition(x, y);
+                this.duplicateButton.render(guiGraphics, mouseX, mouseY, deltaTicks);
+                x += 65;
 
-                this.deleteButton.setPosition(left, top);
-                this.deleteButton.render(gg, mouseX, mouseY, partialTick);
+                this.deleteButton.setPosition(x, y);
+                this.deleteButton.render(guiGraphics, mouseX, mouseY, deltaTicks);
             }
         }
 
@@ -308,12 +320,14 @@ public class PatternListScreen extends Screen {
 
         @Override
         protected void renderWidget(GuiGraphics guiGraphics, int i, int j, float f) {
-            RenderSystem.disableDepthTest();
-            guiGraphics.blitSprite(RenderType::guiTextured, this.sprites.get(patternList.getSelected() == parent, this.isHovered), this.getX(), this.getY(), this.width, this.height);
-            RenderSystem.enableDepthTest();
+//            RenderSystem.disableDepthTest();
+            guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, this.sprites.get(patternList.getSelected() == parent, this.isHovered), this.getX(), this.getY(), this.width, this.height);
+//            RenderSystem.enableDepthTest();
         }
 
-        @Override public void onClick(double d, double e) {
+        @Override
+        public void onClick(MouseButtonEvent mouseButtonEvent, boolean bl) {
+            super.onClick(mouseButtonEvent, bl);
             patternList.setSelected(parent);
         }
     }

@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import com.mojang.blaze3d.platform.NativeImage;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.resources.ResourceLocation;
@@ -154,10 +155,10 @@ public class PatternManager {
             }
         }
 
-        DynamicTexture dynamicTexture = new DynamicTexture(heartImage);
+        DynamicTexture dynamicTexture = new DynamicTexture(() -> "heartTexture", heartImage);
         ResourceLocation textureLocation = ResourceLocation.fromNamespaceAndPath(PartialHearts.MOD_ID, "dynamic_heart_texture");
         Minecraft.getInstance().getTextureManager().register(textureLocation, dynamicTexture);
-        guiGraphics.blit(RenderType::guiTextured, textureLocation, heartX, heartY, 0, 0, 9, 9, 9, 9, 9, 9);
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, textureLocation, heartX, heartY, 0, 0, 9, 9, 9, 9, 9, 9);
 
         heartImage.close();
     }
