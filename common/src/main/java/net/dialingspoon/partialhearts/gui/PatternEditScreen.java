@@ -11,7 +11,6 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -243,9 +242,9 @@ public class PatternEditScreen extends Screen {
     @Override
     public boolean keyPressed(KeyEvent keyEvent) {
         if (hoveredButton != null) {
-            if (keyEvent.scancode() >= GLFW.GLFW_KEY_0 && keyEvent.scancode() <= GLFW.GLFW_KEY_9) {
+            if (keyEvent.key() >= GLFW.GLFW_KEY_0 && keyEvent.key() <= GLFW.GLFW_KEY_9) {
                 nameField.setFocused(false);
-                int digit = keyEvent.scancode() - GLFW.GLFW_KEY_0;
+                int digit = keyEvent.key() - GLFW.GLFW_KEY_0;
                 handleDigitInput(digit);
 
                 return true;
@@ -288,13 +287,12 @@ public class PatternEditScreen extends Screen {
 
     @Override
     public void render(GuiGraphics gg, int mouseX, int mouseY, float partialTicks) {
-        this.renderBackground(gg, mouseX, mouseY, partialTicks);
         gg.blitSprite(RenderPipelines.GUI_TEXTURED, backgroundSprites.get(spriteIndex), leftOffset, topOffset, GRID_SIZE*BUTTON_SIZE, GRID_SIZE*BUTTON_SIZE);
 
         for (Renderable renderable : ((ScreenAccessor)this).getRenderables()) {
             renderable.render(gg, mouseX, mouseY, partialTicks);
         }
-        gg.drawCenteredString(this.font, this.title, this.width / 2, 5, 0xFFFFFF);
+        gg.drawCenteredString(this.font, this.title, this.width / 2, 5, 0xFFFFFFFF);
         this.nameField.render(gg, mouseX, mouseY, partialTicks);
     }
 

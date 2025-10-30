@@ -8,7 +8,7 @@
   "patternlist.duplicate": "Duplicate",
   "patternlist.delete": "Delete",
 
-  "key.category.partialhearts.category.partialhearts.partialhearts": "PartialHearts",
+  "key.category.partialhearts.main": "PartialHearts",
   "key.partialhearts.menu": "Open Customization Menu",
 
   "pattern_edit_screen.info": "Determine the pattern for removal of pixels from the heart!\n\nPixels get removed from the heart in order from 1-81.\n\n§9Right-Click§f an empty pixel to assign it to the §lhighest unused value§r§f, or to remove the value of a valued one.\n\nHover over a pixel and §ltype a number§r§f to assign it to that value.\n\nTwo pixels with the same value will remove at the same time.\nUnassigned pixels will remove when the heart empties.\nSkipped values cause periods where no pixels are removed"

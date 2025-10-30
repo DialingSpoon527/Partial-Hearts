@@ -1,7 +1,6 @@
 package net.dialingspoon.partialhearts.gui;
 
 import com.google.common.collect.ImmutableList;
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.dialingspoon.partialhearts.PatternManager;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
@@ -17,7 +16,6 @@ import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -27,19 +25,12 @@ import java.util.*;
 
 public class PatternListScreen extends Screen {
 
-    private final Screen parent;
-
     private String selectedPatternName = PatternManager.getSelectedPatternName();
     private final Map<String, int[]> patterns;
     private PatternList patternList;
 
-    public int mouseX;
-    public int mouseY;
-
     public PatternListScreen(Screen parent) {
         super(Component.translatable("patternlist.title"));
-        this.parent = parent;
-
         patterns = PatternManager.loadPatterns();
     }
 
@@ -66,7 +57,7 @@ public class PatternListScreen extends Screen {
     @Override
     public void render(GuiGraphics gg, int mouseX, int mouseY, float partialTicks) {
         super.render(gg, mouseX, mouseY, partialTicks);
-        gg.drawCenteredString(this.font, this.title, this.width / 2, 10, 0xFFFFFF);
+        gg.drawCenteredString(this.font, this.title, this.width / 2, 10, 0xFFFFFFFF);
     }
 
     @Override
@@ -79,13 +70,6 @@ public class PatternListScreen extends Screen {
         }
 
         return result;
-    }
-
-    @Override
-    public void mouseMoved(double mouseX, double mouseY) {
-        this.mouseX = (int) mouseX;
-        this.mouseY = (int) mouseY;
-        super.mouseMoved(mouseX, mouseY);
     }
 
     @Override
@@ -188,9 +172,9 @@ public class PatternListScreen extends Screen {
 
         @Override
         protected int addEntry(PatternEntry entry) {
-            children().add(entry);
+            int i = super.addEntry(entry);
             if (entry.getName().equals(selectedPatternName)) setSelected(entry);
-            return children().size() - 1;
+            return i;
         }
     }
 
@@ -224,8 +208,10 @@ public class PatternListScreen extends Screen {
         }
 
         @Override
-        public void renderContent(GuiGraphics guiGraphics, int x, int y, boolean bl, float deltaTicks) {
-            drawScrollableText(guiGraphics, font, Component.literal(name), x, y + 5, 160, 20, 0xFFFFFF);
+        public void renderContent(GuiGraphics guiGraphics, int mouseX, int mouseY, boolean bl, float deltaTicks) {
+            int x = this.getContentX();
+            int y = this.getContentY();
+            drawScrollableText(guiGraphics, font, Component.literal(name), x, y + 5, 160, 20, 0xFFFFFFFF);
 
             x += 170;
             selectButton.setPosition(x, y);
@@ -320,9 +306,7 @@ public class PatternListScreen extends Screen {
 
         @Override
         protected void renderWidget(GuiGraphics guiGraphics, int i, int j, float f) {
-//            RenderSystem.disableDepthTest();
             guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, this.sprites.get(patternList.getSelected() == parent, this.isHovered), this.getX(), this.getY(), this.width, this.height);
-//            RenderSystem.enableDepthTest();
         }
 
         @Override
