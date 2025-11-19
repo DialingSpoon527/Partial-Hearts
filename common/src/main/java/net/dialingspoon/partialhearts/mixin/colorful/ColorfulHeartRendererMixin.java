@@ -1,4 +1,4 @@
-package net.dialingspoon.partialhearts.mixin;
+package net.dialingspoon.partialhearts.mixin.colorful;
 
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
@@ -33,8 +33,6 @@ public abstract class ColorfulHeartRendererMixin {
             } else {
                 PatternManager.health = player.getAbsorptionAmount();
             }
-        } else {
-            PatternManager.health = -1;
         }
 
         original.call(heartInstance, guiGraphics, heartX, heartY, hardcore, highlightContainer, highlightHeart);

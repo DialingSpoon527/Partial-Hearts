@@ -1,12 +1,12 @@
 package net.dialingspoon.partialhearts.gui;
 
 import com.google.common.collect.ImmutableList;
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.dialingspoon.partialhearts.PartialHearts;
 import net.dialingspoon.partialhearts.PatternManager;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
@@ -19,6 +19,7 @@ import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -30,6 +31,7 @@ public class PatternListScreen extends Screen {
     private String selectedPatternName = PatternManager.getSelectedPatternName();
     private final Map<String, int[]> patterns;
     private PatternList patternList;
+    private long initTime;
 
     public PatternListScreen(Screen parent) {
         super(Component.translatable("patternlist.title"));
@@ -40,6 +42,7 @@ public class PatternListScreen extends Screen {
 
     @Override
     protected void init() {
+        initTime = Util.getMillis();
         this.patternList = new PatternList(this.minecraft, this.width, 175, 30, 22);
         this.addRenderableWidget(this.patternList);
 
@@ -188,7 +191,7 @@ public class PatternListScreen extends Screen {
         private final int[] data;
         private final boolean special;
 
-        private CheckButton selectButton;
+        private final CheckButton selectButton;
         private Button editButton;
         private Button duplicateButton;
         private Button deleteButton;
@@ -214,22 +217,28 @@ public class PatternListScreen extends Screen {
 
         @Override
         public void render(GuiGraphics gg, int index, int top, int left, int rowWidth, int rowHeight, int mouseX, int mouseY, boolean hovered, float partialTick) {
+            PatternManager.setSelectedPattern(patterns.get(name));
+            gg.blit(new ResourceLocation("textures/gui/icons.png"), left - 20, top + 7, 18, 18, Gui.HeartType.CONTAINER.getX(false, false), 0, 9, 9, 256, 256);
+            PatternManager.health = 2 - (((float) ((Util.getMillis() - initTime)) / 500) % 20) / 10;
+            gg.blit(new ResourceLocation("textures/gui/icons.png"), left - 20, top + 7, 18, 18, Gui.HeartType.NORMAL.getX(false, false), 0, 9, 9, 256, 256);
+
+            left += 5;
             drawScrollableText(gg, font, Component.literal(name), left, top + 5, 160, 20, 0xFFFFFF);
 
-            left += 170;
+            left += rowWidth /2;
             selectButton.setPosition(left, top);
             selectButton.render(gg, mouseX, mouseY, partialTick);
 
-            left += 30;
+            left += rowWidth > 367 ? 30 : rowWidth / 12;
 
             if (!special) {
                 this.editButton.setPosition(left, top);
                 this.editButton.render(gg, mouseX, mouseY, partialTick);
-                left += 45;
+                left += rowWidth > 367 ? 45 : rowWidth / 8;
 
                 this.duplicateButton.setPosition(left, top);
                 this.duplicateButton.render(gg, mouseX, mouseY, partialTick);
-                left += 65;
+                left += rowWidth > 367 ? 65 : (int)(rowWidth / 5.5f);
 
                 this.deleteButton.setPosition(left, top);
                 this.deleteButton.render(gg, mouseX, mouseY, partialTick);
@@ -260,7 +269,7 @@ public class PatternListScreen extends Screen {
         }
 
         @Override
-        public List<? extends GuiEventListener> children() {
+        public @NotNull List<? extends GuiEventListener> children() {
             if (special) {
                 return Collections.emptyList();
             }
@@ -268,7 +277,7 @@ public class PatternListScreen extends Screen {
         }
 
         @Override
-        public List<? extends NarratableEntry> narratables() {
+        public @NotNull List<? extends NarratableEntry> narratables() {
             if (special) {
                 return Collections.emptyList();
             }
@@ -288,7 +297,7 @@ public class PatternListScreen extends Screen {
         }
     }
 
-    public class CheckButton extends AbstractWidget {
+    class CheckButton extends AbstractWidget {
         private final ResourceLocation texture = new ResourceLocation(PartialHearts.MOD_ID, "textures/gui/sprites/checkbox.png");
         private final PatternEntry parent;
 
@@ -304,9 +313,7 @@ public class PatternListScreen extends Screen {
 
         @Override
         public void renderWidget(GuiGraphics guiGraphics, int i, int j, float f) {
-            RenderSystem.disableDepthTest();
             guiGraphics.blit(texture, this.getX(), this.getY(), this.width, this.height, this.isHovered ? 20 : 0, patternList.getSelected() == parent ? 20 : 0, 20, 20, 64, 64);
-            RenderSystem.enableDepthTest();
         }
 
         @Override public void onClick(double d, double e) {

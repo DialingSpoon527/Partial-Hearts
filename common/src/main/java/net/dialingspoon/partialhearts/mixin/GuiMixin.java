@@ -3,14 +3,11 @@ package net.dialingspoon.partialhearts.mixin;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import net.dialingspoon.partialhearts.PatternManager;
-import net.dialingspoon.partialhearts.interfaces.IGui;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
-import org.spongepowered.asm.mixin.Final;
+import org.jetbrains.annotations.Nullable;
+import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -19,62 +16,53 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(Gui.class)
-public abstract class GuiMixin implements IGui {
-    @Shadow @Final private static ResourceLocation GUI_ICONS_LOCATION;
+public abstract class GuiMixin {
+    @Shadow
+    @Nullable protected abstract Player getCameraPlayer();
     @Unique
     private boolean partialhearts$first = true;
     @Unique
     private boolean partialhearts$aborptionFirst = true;
     @Unique
     private boolean partialhearts$blinkingCalled = false;
-    @Unique
-    public float partialhearts$displayHealthFloat;
-    @Unique
-    public void setdisplayHealthFloat(float value) {
-        partialhearts$displayHealthFloat = value;
-    }
 
     @WrapOperation(method = "renderHearts", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/Gui;renderHeart(Lnet/minecraft/client/gui/GuiGraphics;Lnet/minecraft/client/gui/Gui$HeartType;IIIZZ)V", ordinal = 1))
-    private void renderAbsorptionHearts(Gui instance, GuiGraphics guiGraphics, Gui.HeartType heartType, int heartX, int heartY, int textureY, boolean blinking, boolean half, Operation<Void> original) {
-        LocalPlayer player = Minecraft.getInstance().player;
-        float absorptionAmount = player.getAbsorptionAmount();
+    private void prepareAbsorptionMask(Gui instance, GuiGraphics guiGraphics, Gui.HeartType heartType, int heartX, int heartY, int textureY, boolean blinking, boolean half, Operation<Void> original) {
         if (partialhearts$aborptionFirst) {
             partialhearts$aborptionFirst = false;
-            PatternManager.renderHeart(PatternManager.getImage(GUI_ICONS_LOCATION, heartType.getX(player.level().getLevelData().isHardcore(), blinking), textureY), guiGraphics, absorptionAmount, heartX, heartY);
-        } else {
-            original.call(instance, guiGraphics, heartType, heartX, heartY, textureY, blinking, false);
+            PatternManager.health = getCameraPlayer().getAbsorptionAmount();
         }
+        original.call(instance, guiGraphics, heartType, heartX, heartY, textureY, blinking, false);
     }
     @WrapOperation(method = "renderHearts", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/Gui;renderHeart(Lnet/minecraft/client/gui/GuiGraphics;Lnet/minecraft/client/gui/Gui$HeartType;IIIZZ)V", ordinal = 2))
-    private void renderFlashingHearts(Gui instance, GuiGraphics guiGraphics, Gui.HeartType heartType, int heartX, int heartY, int textureY, boolean blinking, boolean half, Operation<Void> original) {
-        float healthAmount = partialhearts$displayHealthFloat;
+    private void prepareFlashingMask(Gui instance, GuiGraphics guiGraphics, Gui.HeartType heartType, int heartX, int heartY, int textureY, boolean blinking, boolean half, Operation<Void> original) {
         if (partialhearts$first) {
             partialhearts$first = false;
             partialhearts$blinkingCalled = true;
-            PatternManager.renderHeart(PatternManager.getImage(GUI_ICONS_LOCATION, heartType.getX(Minecraft.getInstance().player.level().getLevelData().isHardcore(), blinking), textureY), guiGraphics, healthAmount, heartX, heartY);
-        } else {
-            original.call(instance, guiGraphics, heartType, heartX, heartY, textureY, blinking, false);
+            PatternManager.health = PatternManager.displayHealthFloat;
         }
+        original.call(instance, guiGraphics, heartType, heartX, heartY, textureY, blinking, false);
     }
     @WrapOperation(method = "renderHearts", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/Gui;renderHeart(Lnet/minecraft/client/gui/GuiGraphics;Lnet/minecraft/client/gui/Gui$HeartType;IIIZZ)V", ordinal = 3))
-    private void renderHearts(Gui instance, GuiGraphics guiGraphics, Gui.HeartType heartType, int heartX, int heartY, int textureY, boolean blinking, boolean half, Operation<Void> original) {
+    private void prepareHeartMask(Gui instance, GuiGraphics guiGraphics, Gui.HeartType heartType, int heartX, int heartY, int textureY, boolean blinking, boolean half, Operation<Void> original) {
         if (!partialhearts$blinkingCalled) {
-            LocalPlayer player = Minecraft.getInstance().player;
-            float healthAmount = player.getHealth();
-
             if (partialhearts$first) {
                 partialhearts$first = false;
-                PatternManager.renderHeart(PatternManager.getImage(GUI_ICONS_LOCATION, heartType.getX(player.level().getLevelData().isHardcore(), blinking), textureY), guiGraphics, healthAmount, heartX, heartY);
-            } else {
-                original.call(instance, guiGraphics, heartType, heartX, heartY, textureY, blinking, false);
+                PatternManager.health = getCameraPlayer().getHealth();
             }
+            original.call(instance, guiGraphics, heartType, heartX, heartY, textureY, blinking, false);
         }
     }
 
     @Inject(method = "renderHearts", at = @At("TAIL"))
-    public void resetFirstHeart(GuiGraphics guiGraphics, Player player, int i, int j, int k, int l, float f, int m, int n, int o, boolean bl, CallbackInfo ci) {
+    public void resetFirstHeartTrackers(GuiGraphics guiGraphics, Player player, int i, int j, int k, int l, float f, int m, int n, int o, boolean bl, CallbackInfo ci) {
         partialhearts$first = true;
         partialhearts$aborptionFirst = true;
         partialhearts$blinkingCalled = false;
+    }
+
+    @Inject(method = "renderPlayerHealth", at = @At(value = "FIELD", target = "Lnet/minecraft/client/gui/Gui;displayHealth:I", opcode = Opcodes.PUTFIELD))
+    private void recordDisplayHealth(GuiGraphics guiGraphics, CallbackInfo ci) {
+        PatternManager.displayHealthFloat = getCameraPlayer().getHealth();
     }
 }

@@ -12,6 +12,9 @@ dependencies {
     //modImplementation "dev.architectury:architectury:$rootProject.architectury_api_version"
 
     modCompileOnly "curse.maven:colorful-hearts-854213:${rootProject.colorfulhearts_forge}"
+    modCompileOnly "curse.maven:armorpoints-396094:${rootProject.armorpointspp_forge}"
+    modCompileOnly "curse.maven:overflowing-bars-852662:${rootProject.overflowingbars_forge}"
+    modCompileOnly "curse.maven:immediatelyfast-686911:${rootProject.immediatelyfast_fabric}"
 }
 
 loom {

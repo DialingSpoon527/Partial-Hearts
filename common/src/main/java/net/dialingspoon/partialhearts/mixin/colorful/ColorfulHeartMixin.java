@@ -1,4 +1,4 @@
-package net.dialingspoon.partialhearts.mixin;
+package net.dialingspoon.partialhearts.mixin.colorful;
 
 import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
@@ -13,12 +13,12 @@ import terrails.colorfulhearts.api.heart.drawing.Heart;
 import terrails.colorfulhearts.api.heart.drawing.HeartDrawing;
 
 @Mixin(Heart.class)
-public abstract class HeartMixin {
+public abstract class ColorfulHeartMixin {
     @Unique
     float health;
 
     @Inject(method = "draw", at = @At(value = "HEAD"))
-    private void storeHealthLocal (GuiGraphics guiGraphics, int x, int y, boolean hardcore, boolean highlightContainer, boolean highlightHeart, CallbackInfo ci) {
+    private void storeHealthLocal(GuiGraphics guiGraphics, int x, int y, boolean hardcore, boolean highlightContainer, boolean highlightHeart, CallbackInfo ci) {
         health = PatternManager.health;
         PatternManager.health = -1;
     }

@@ -46,7 +46,10 @@ dependencies {
     api(include("com.electronwill.night-config:core:${nightconfig_version}"))
     api(include("com.electronwill.night-config:toml:${nightconfig_version}"))
 
-    modImplementation "curse.maven:colorful-hearts-854213:${rootProject.colorfulhearts_fabric}"
+    modCompileOnly("curse.maven:colorful-hearts-854213:${rootProject.colorfulhearts_fabric}")
+    modCompileOnly("curse.maven:armorpoints-396094:${rootProject.armorpointspp_fabric}")
+    modCompileOnly("curse.maven:overflowing-bars-852662:${rootProject.overflowingbars_fabric}")
+    modCompileOnly("curse.maven:immediatelyfast-686911:${rootProject.immediatelyfast_fabric}")
 
     modImplementation("com.terraformersmc:modmenu:${project.modmenu_version}")
 }

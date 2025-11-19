@@ -24,8 +24,7 @@
     ]
   },
   "mixins": [
-    "partialhearts.mixins.json",
-    "partialhearts.fabric.mixins.json"
+    "partialhearts.mixins.json"
   ],
   "depends": {
     "fabricloader": ">=0.16.9",
