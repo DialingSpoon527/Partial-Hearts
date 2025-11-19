@@ -12,6 +12,8 @@ dependencies {
     //modImplementation "dev.architectury:architectury:$rootProject.architectury_api_version"
 
     modCompileOnly "curse.maven:colorful-hearts-854213:${rootProject.colorfulhearts_neo}"
+    modCompileOnly "curse.maven:armorpoints-396094:${rootProject.armorpointspp_neo}"
+    modCompileOnly "curse.maven:immediatelyfast-686911:${rootProject.immediatelyfast_neo}"
 }
 
 loom {

@@ -41,9 +41,11 @@ dependencies {
     shadowBundle project(path: ':common', configuration: 'transformProductionForge')
 
     compileOnly(annotationProcessor("io.github.llamalad7:mixinextras-common:0.4.1"))
-    implementation(include("io.github.llamalad7:mixinextras-forge:0.4.1"))
+    implementation(include("io.github.llamalad7:mixinextras-forge:0.5.0"))
 
-    modImplementation "curse.maven:colorful-hearts-854213:${rootProject.colorfulhearts_forge}"
+    compileOnly("curse.maven:colorful-hearts-854213:${rootProject.colorfulhearts_forge}")
+    compileOnly("curse.maven:armorpoints-396094:${rootProject.armorpointspp_forge}")
+    compileOnly("curse.maven:immediatelyfast-686911:${rootProject.immediatelyfast_forge}")
 }
 
 processResources {
@@ -61,4 +63,5 @@ shadowJar {
 
 remapJar {
     input.set shadowJar.archiveFile
+    atAccessWideners.add("partialhearts.accesswidener")
 }

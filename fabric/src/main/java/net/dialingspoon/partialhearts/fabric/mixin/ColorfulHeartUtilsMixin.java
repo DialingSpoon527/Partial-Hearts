@@ -9,6 +9,36 @@ import terrails.colorfulhearts.render.HeartUtils;
 @Mixin(value = HeartUtils.class, remap = false)
 public abstract class ColorfulHeartUtilsMixin {
 
+    @ModifyVariable(method = "calculateHearts",
+            at = @At(value = "STORE", ordinal = 0), ordinal = 3)
+    private static int correctTopHealth(int topHealth, @Local(name = "health") int health) {
+        if (health > 20 && topHealth == 0) return 20;
+        return topHealth;
+    }
+
+    @ModifyVariable(method = "calculateHearts",
+            at = @At(value = "STORE", ordinal = 0), ordinal = 4)
+    private static int correctBottomHealthRow(int bottomHealthRow, @Local(name = "health") int health) {
+        if (health > 20 && health % 20 == 0) return bottomHealthRow - 1;
+        return bottomHealthRow;
+    }
+
+    @ModifyVariable(method = "calculateHearts",
+            at = @At(value = "STORE", ordinal = 0), ordinal = 7)
+    private static int correctTopAbsorbing(int topAbsorbing, @Local(name = "absorbing") int absorbing,
+                                           @Local(name = "maxAbsorbing") int maxAbsorbing) {
+        if (absorbing > 20 && topAbsorbing == 0) return maxAbsorbing;
+        return topAbsorbing;
+    }
+
+    @ModifyVariable(method = "calculateHearts",
+            at = @At(value = "STORE", ordinal = 0), ordinal = 8)
+    private static int correctBottomAbsorptionRow(int bottomAbsorptionRow, @Local(name = "absorbing") int absorbing,
+                                                  @Local(name = "maxAbsorbing") int maxAbsorbing) {
+        if (absorbing > maxAbsorbing && absorbing % maxAbsorbing == 0) return bottomAbsorptionRow - 1;
+        return bottomAbsorptionRow;
+    }
+
     @ModifyVariable(method = "calculateHearts(Lterrails/colorfulhearts/api/heart/drawing/OverlayHeart;III)[Lterrails/colorfulhearts/api/heart/drawing/Heart;",
             at = @At(value = "STORE", ordinal = 0), ordinal = 0)
     private static boolean forceColorfulBackground(boolean half, @Local(name = "i") int index,
