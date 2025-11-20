@@ -4,15 +4,23 @@
   "compatibilityLevel": "JAVA_17",
   "minVersion": "0.8",
   "client": [
-    "ColoredHeartsSupplierMixin",
-    "ColorfulHeartRendererMixin",
-    "ColorfulHeartUtilsMixin",
-    "ColorfulSpriteHeartDrawingMixin",
+    "GuiGraphicsMixin",
     "GuiMixin",
-    "HeartAccessor",
-    "ScreenAccessor"
+    "ScreenAccessor",
+    "immediatelyfast.ImmediatelyFastGuiGraphicsMixin"
   ],
   "injectors": {
     "defaultRequire": 1
-  }
+  },
+  "mixins": [
+    "armorpointspp.APPPHealthComponentMixin",
+    "armorpointspp.APPPHealthTextComponentMixin",
+    "armorpointspp.APPPRendererImplMixin",
+    "colorful.ColorfulHeartMixin",
+    "colorful.ColorfulHeartRendererMixin",
+    "colorful.ColorfulHeartUtilsMixin",
+    "colorful.ColorfulSpriteHeartDrawingMixin",
+    "overflowingbars.OverflowingHealthBarRendererMixin"
+  ],
+  "plugin": "net.dialingspoon.partialhearts.mixin.PartialHeartsMixinPlugin"
 }

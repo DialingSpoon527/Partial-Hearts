@@ -8,6 +8,6 @@ public class ResourceReloadListener implements ResourceManagerReloadListener {
 
     @Override
     public void onResourceManagerReload(ResourceManager resourceManager) {
-        PatternManager.onResourceManagerReload(resourceManager);
+        PatternManager.onResourceManagerReload();
     }
 }

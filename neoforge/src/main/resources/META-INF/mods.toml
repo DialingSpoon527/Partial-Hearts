@@ -1,6 +1,6 @@
 modLoader = "javafml"
 loaderVersion = "[1,)"
-issueTrackerURL = "https://github.com/19Phin/Partial-Hearts/issues"
+issueTrackerURL = "https://github.com/DialingSpoon527/Partial-Hearts/issues"
 license = "MIT"
 
 [[mods]]
@@ -11,19 +11,19 @@ authors = "DialingSpoon"
 description = '''
 Exact health displayed with fractions of a heart.
 '''
-logoFile = "assets/partialhearts/icon.png"
+logoFile = "icon.png"
 
 [[dependencies.partialhearts]]
 modId = "neoforge"
 mandatory = true
-versionRange = "(20.2,20.4)"
+versionRange = "(20.2,20.5)"
 ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.partialhearts]]
 modId = "minecraft"
 mandatory = true
-versionRange = "(1.20.2,1.20.4)"
+versionRange = "(1.20.2,1.20.5)"
 ordering = "NONE"
 side = "BOTH"
 

@@ -23,7 +23,7 @@ public class ResourceReloadListener implements SimpleResourceReloadListener<Void
 
     @Override
     public CompletableFuture<Void> apply(Void data, ResourceManager resourceManager, ProfilerFiller profiler, Executor executor) {
-        PatternManager.onResourceManagerReload(resourceManager);
+        PatternManager.onResourceManagerReload();
         return CompletableFuture.completedFuture(null);
     }
 }

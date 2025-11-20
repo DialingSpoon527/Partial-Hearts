@@ -8,8 +8,8 @@
     "DialingSpoon"
   ],
   "contact": {
-    "issues": "https://github.com/19Phin/Partial-Hearts/issues",
-    "sources": "https://github.com/19Phin/Partial-Hearts"
+    "issues": "https://github.com/DialingSpoon527/Partial-Hearts/issues",
+    "sources": "https://github.com/DialingSpoon527/Partial-Hearts"
   },
   "license": "MIT",
   "icon": "assets/partialhearts/icon.png",
@@ -24,20 +24,12 @@
     ]
   },
   "mixins": [
-    "partialhearts.mixins.json",
-    "partialhearts.fabric.mixins.json"
+    "partialhearts.mixins.json"
   ],
   "depends": {
     "fabricloader": ">=0.16.9",
-    "minecraft": ">1.20.2 <1.20.4",
+    "minecraft": ">1.20.2 <1.21.0",
     "java": ">=17",
     "fabric-api": "*"
-  },
-  "custom": {
-    "modmenu": {
-      "entrypoints": {
-        "modmenu": [ "com.example.mod.ExampleModMenuApiImpl" ]
-      }
-    }
   }
 }
