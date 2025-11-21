@@ -40,7 +40,9 @@ dependencies {
     common(project(path: ':common', configuration: 'namedElements')) { transitive false }
     shadowBundle project(path: ':common', configuration: 'transformProductionNeoForge')
 
-    modImplementation "curse.maven:colorful-hearts-854213:${rootProject.colorfulhearts_neo}"
+    modCompileOnly("curse.maven:colorful-hearts-854213:${rootProject.colorfulhearts_neo}")
+    modCompileOnly("curse.maven:overflowing-bars-852662:${rootProject.overflowingbars_neo}")
+    modCompileOnly("curse.maven:immediatelyfast-686911:${rootProject.immediatelyfast_neo}")
 }
 
 processResources {
