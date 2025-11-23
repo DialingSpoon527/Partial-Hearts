@@ -10,4 +10,5 @@ public final class PartialHeartsFabric implements ClientModInitializer {
         ResourceManagerHelper.get(PackType.CLIENT_RESOURCES).registerReloadListener(new ResourceReloadListener());
         ModKeys.register();
     }
+
 }
