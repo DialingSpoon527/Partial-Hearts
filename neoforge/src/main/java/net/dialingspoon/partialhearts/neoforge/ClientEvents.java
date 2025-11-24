@@ -4,7 +4,6 @@ import net.dialingspoon.partialhearts.PartialHearts;
 import net.dialingspoon.partialhearts.gui.PatternListScreen;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.packs.resources.ReloadableResourceManager;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -21,10 +20,7 @@ public class ClientEvents {
                 Minecraft.getInstance().setScreen(new PatternListScreen(null));
             }
         }
-    }
 
-    @EventBusSubscriber(modid = PartialHearts.MOD_ID, value = Dist.CLIENT, bus = EventBusSubscriber.Bus.MOD)
-    public static class ClientModBusEvents {
         @SubscribeEvent
         public static void initKeys(RegisterKeyMappingsEvent event) {
             event.register(ModKeys.PARTIALHEARTS_MENU);
