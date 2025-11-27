@@ -4,15 +4,15 @@
   "compatibilityLevel": "JAVA_21",
   "minVersion": "0.8",
   "client": [
-    "ColoredHeartsSupplierMixin",
-    "ColorfulHeartRendererMixin",
-    "ColorfulHeartUtilsMixin",
-    "ColorfulSpriteHeartDrawingMixin",
+    "GuiGraphicsMixin",
     "GuiMixin",
-    "HeartAccessor",
-    "ScreenAccessor"
+    "GuiRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1
-  }
+  },
+  "mixins": [
+    "overflowingbars.OverflowingHealthBarRendererMixin"
+  ],
+  "plugin": "net.dialingspoon.partialhearts.mixin.PartialHeartsMixinPlugin"
 }

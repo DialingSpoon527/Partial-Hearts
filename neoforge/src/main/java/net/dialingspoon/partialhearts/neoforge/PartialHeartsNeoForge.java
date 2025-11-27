@@ -11,5 +11,6 @@ import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 public final class PartialHeartsNeoForge {
     public PartialHeartsNeoForge(ModContainer modContainer) {
         modContainer.registerExtensionPoint(IConfigScreenFactory.class, (container, screen) -> new PatternListScreen(screen));
+        PartialHearts.init();
     }
 }

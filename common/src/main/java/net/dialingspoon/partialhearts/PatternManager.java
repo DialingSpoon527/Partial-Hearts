@@ -2,14 +2,14 @@ package net.dialingspoon.partialhearts;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.mojang.blaze3d.platform.NativeImage;
+import com.mojang.blaze3d.buffers.GpuBufferSlice;
+import net.dialingspoon.partialhearts.rendering.DynamicCustomUniforms;
+import net.dialingspoon.partialhearts.rendering.HeartMaskRenderState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.client.renderer.texture.DynamicTexture;
+import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.GuiSpriteManager;
+import net.minecraft.client.renderer.texture.SpriteContents;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.packs.resources.Resource;
-import net.minecraft.server.packs.resources.ResourceManager;
 
 import java.io.*;
 import java.util.*;
@@ -19,6 +19,16 @@ public class PatternManager {
     public static final String RANDOM_PATTERN = "random";
     private static String selectedPatternName = ORIGINAL_PATTERN;
     private static int[] selectedPattern;
+    private static int[] usedPixels;
+    public static float displayHealthFloat = -1;
+    public static float health = -1;
+
+    public static ArrayList<HeartMaskRenderState> heartUniformQueue = new ArrayList<>();
+    public static final DynamicCustomUniforms ubo = new DynamicCustomUniforms();
+
+    public static int[] getUsedPixels() {
+        return usedPixels.clone();
+    }
 
     private static final Gson GSON = new GsonBuilder()
             .setPrettyPrinting()
@@ -26,6 +36,10 @@ public class PatternManager {
 
     public static String getSelectedPatternName() {
         return selectedPatternName;
+    }
+
+    public static void setSelectedPattern(int[] selectedPattern) {
+        PatternManager.selectedPattern = selectedPattern;
     }
 
     public static void savePatterns(Map<String, int[]> patterns, String selectedName, int[] selectedPattern) {
@@ -114,89 +128,67 @@ public class PatternManager {
         return resultArray;
     }
 
-    public static int[] getUsedPixels() {
-        int[] usedArray = new int[81];
-        Arrays.fill(usedArray, 0);
-        for (int[] spriteData : PartialHearts.CAPTURED_SPRITES.values()) {
-            NativeImage image = PatternManager.loadImageFromArray(spriteData);
-
-            for (int i = 0; i < 81; i++) {
-                int x = i % 9;
-                int y = i / 9;
-                int pixel = image.getPixel(x, y);
-                int alpha = (pixel >> 24) & 0xFF;
-
-                if (alpha != 0) {
-                    usedArray[i] = -1;
-                }
-            }
-            image.close();
-        }
-        return usedArray;
-    }
-
-    public static void renderHeart(NativeImage heartImage, GuiGraphics guiGraphics, float health, int heartX, int heartY) {
+    public static int[] createMaskBits(float health) {
         int[] pixelOrder = selectedPattern;
+        int[] bits = new int[3];
 
-        long usedIndicesCount = Arrays.stream(pixelOrder)
-                .max()
-                .getAsInt();
+        int usedIndicesCount = Arrays.stream(pixelOrder).max().orElse(0);
 
         double lastHeartFraction = 1 - (health % 2) / 2.0;
         lastHeartFraction = lastHeartFraction == 1 ? 0 : lastHeartFraction;
+
         int fullPixelsToRemove = (int) Math.ceil(lastHeartFraction * (usedIndicesCount + 1));
 
         for (int i = 0; i < pixelOrder.length; i++) {
-            if (pixelOrder[i] < fullPixelsToRemove && pixelOrder[i] != 0) {
-                int x = i % 9;
-                int y = i / 9;
-                heartImage.setPixel(x, y, 0);
+            int idx = pixelOrder[i];
+            if (idx < fullPixelsToRemove && idx != 0) {
+                int bucket = i / 27;
+                int bitPos = i % 27;
+                bits[bucket] |= (1 << bitPos);
             }
         }
 
-        ResourceLocation textureLocation = ResourceLocation.fromNamespaceAndPath(PartialHearts.MOD_ID, "dynamic_heart_texture");
-        DynamicTexture dynamicTexture = new DynamicTexture(textureLocation::toString, heartImage);
-        Minecraft.getInstance().getTextureManager().register(textureLocation, dynamicTexture);
-        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, textureLocation, heartX, heartY, 0, 0, 9, 9, 9, 9, 9, 9);
-
-        heartImage.close();
+        return bits;
     }
 
-    public static void onResourceManagerReload(ResourceManager resourceManager) {
-        Map<ResourceLocation, Resource> resources = resourceManager.listResources("textures/gui/sprites/hud/heart", fileName -> fileName.toString().endsWith(".png"));
+    public static List<GpuBufferSlice> getUniformSlices() {
+        ubo.reset();
+        GpuBufferSlice[] gpuBufferSlices = ubo.writeHeartUniforms(heartUniformQueue.toArray(HeartMaskRenderState[]::new));
+        heartUniformQueue.clear();
+        return List.of(gpuBufferSlices);
+    }
 
-        for (Map.Entry<ResourceLocation, Resource> entry : resources.entrySet()) {
-            ResourceLocation original = entry.getKey();
-            Resource resource = entry.getValue();
+    public static void onResourceManagerReload() {
+        ArrayList<ResourceLocation> hearts = new ArrayList<>();
 
-            String path = original.getPath();
-            String cleanPath = path.substring("textures/gui/sprites/".length(), path.length() - ".png".length());
-            ResourceLocation resourceLocation = ResourceLocation.fromNamespaceAndPath(original.getNamespace(), cleanPath);
-
-            try (InputStream inputStream = resource.open()) {
-                NativeImage image = NativeImage.read(inputStream);
-                int[] spriteData = image.getPixels();
-                image.close();
-
-                PartialHearts.CAPTURED_SPRITES.put(resourceLocation, spriteData);
-            } catch (IOException e) {
-                e.printStackTrace();
+        for(Gui.HeartType heartType : Gui.HeartType.values()) {
+            if (heartType != Gui.HeartType.CONTAINER) {
+                hearts.add(heartType.getSprite(false, false, false));
+                hearts.add(heartType.getSprite(true, false, false));
+                hearts.add(heartType.getSprite(false, false, true));
+                hearts.add(heartType.getSprite(true, false, false));
             }
+        }
+
+        GuiSpriteManager guiSprites = Minecraft.getInstance().getGuiSprites();
+
+        int[] usedArray = new int[81];
+        Arrays.fill(usedArray, 0);
+
+        for (ResourceLocation heartLocation : hearts) {
+            SpriteContents sprite = guiSprites.getSprite(heartLocation).contents();
+
+            sprite.getUniqueFrames().forEach(frame -> {
+                for (int i = 0; i < 81; i++) {
+                    if (!sprite.isTransparent(frame, i % 9, i / 9)) usedArray[i] = -1;
+                }
+            });
+
+            usedPixels = usedArray;
         }
 
         loadPatterns();
     }
 
-    public static NativeImage loadImageFromArray(int[] data) {
-        NativeImage loadedImage = new NativeImage(9, 9, false);
-        for (int i = 0; i < data.length; i++) {
-            int x = i % 9;
-            int y = i / 9;
-            loadedImage.setPixel(x, y, data[i]);
-        }
-        return loadedImage;
-    }
-
     public record PatternsConfig(Map<String, int[]> patterns, String selectedPattern) {}
 }
-
