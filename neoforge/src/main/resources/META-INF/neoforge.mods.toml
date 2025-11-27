@@ -1,6 +1,6 @@
 modLoader = "javafml"
-loaderVersion = "[4,)"
-issueTrackerURL = "https://github.com/19Phin/Partial-Hearts/issues"
+loaderVersion = "[1,)"
+issueTrackerURL = "https://github.com/DialingSpoon527/Partial-Hearts/issues"
 license = "MIT"
 
 [[mods]]
