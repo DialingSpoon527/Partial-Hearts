@@ -4,15 +4,19 @@
   "compatibilityLevel": "JAVA_21",
   "minVersion": "0.8",
   "client": [
-    "ColoredHeartsSupplierMixin",
-    "ColorfulHeartRendererMixin",
-    "ColorfulHeartUtilsMixin",
-    "ColorfulSpriteHeartDrawingMixin",
+    "GuiGraphicsMixin",
     "GuiMixin",
-    "HeartAccessor",
-    "ScreenAccessor"
+    "ScreenAccessor",
+    "immediatelyfast.ImmediatelyFastGuiGraphicsMixin"
   ],
   "injectors": {
     "defaultRequire": 1
-  }
+  },
+  "mixins": [
+    "colorful.ColorfulHeartMixin",
+    "colorful.ColorfulHeartRendererMixin",
+    "colorful.ColorfulHeartUtilsMixin",
+    "colorful.ColorfulSpriteHeartDrawingMixin"
+  ],
+  "plugin": "net.dialingspoon.partialhearts.mixin.PartialHeartsMixinPlugin"
 }

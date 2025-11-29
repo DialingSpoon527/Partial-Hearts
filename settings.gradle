@@ -10,5 +10,4 @@ pluginManagement {
 rootProject.name = 'partialhearts'
 
 include 'common'
-include 'fabric'
 include 'neoforge'
