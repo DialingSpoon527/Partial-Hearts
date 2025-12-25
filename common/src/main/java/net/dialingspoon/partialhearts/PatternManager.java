@@ -10,7 +10,7 @@ import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.texture.SpriteContents;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.data.AtlasIds;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.io.*;
 import java.util.*;
@@ -160,7 +160,7 @@ public class PatternManager {
     }
 
     public static void onResourceManagerReload() {
-        ArrayList<ResourceLocation> hearts = new ArrayList<>();
+        ArrayList<Identifier> hearts = new ArrayList<>();
 
         for(Gui.HeartType heartType : Gui.HeartType.values()) {
             if (heartType != Gui.HeartType.CONTAINER) {
@@ -176,7 +176,7 @@ public class PatternManager {
         int[] usedArray = new int[81];
         Arrays.fill(usedArray, 0);
 
-        for (ResourceLocation heartLocation : hearts) {
+        for (Identifier heartLocation : hearts) {
             SpriteContents sprite = guiSprites.getSprite(heartLocation).contents();
 
             sprite.getUniqueFrames().forEach(frame -> {

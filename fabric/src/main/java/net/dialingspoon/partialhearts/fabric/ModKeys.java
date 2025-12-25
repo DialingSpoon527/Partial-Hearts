@@ -6,11 +6,11 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.lwjgl.glfw.GLFW;
 
 public class ModKeys {
-    public static final KeyMapping.Category KEY_CATEGORY_SPEEDCAP = KeyMapping.Category.register(ResourceLocation.fromNamespaceAndPath("partialhearts", "main"));
+    public static final KeyMapping.Category KEY_CATEGORY_SPEEDCAP = KeyMapping.Category.register(Identifier.fromNamespaceAndPath("partialhearts", "main"));
     public static KeyMapping PARTIALHEARTS_MENU = new KeyMapping("key.partialhearts.menu", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_UNKNOWN, KEY_CATEGORY_SPEEDCAP);
 
     public static void register() {

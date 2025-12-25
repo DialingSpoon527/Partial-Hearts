@@ -2,7 +2,7 @@ package net.dialingspoon.partialhearts.gui;
 
 import com.google.common.collect.ImmutableList;
 import net.dialingspoon.partialhearts.PatternManager;
-import net.minecraft.Util;
+import net.minecraft.util.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.Gui;
@@ -19,7 +19,7 @@ import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import org.jetbrains.annotations.NotNull;
 
@@ -303,10 +303,10 @@ public class PatternListScreen extends Screen {
 
     class CheckButton extends AbstractWidget {
         private final WidgetSprites sprites = new WidgetSprites(
-                ResourceLocation.withDefaultNamespace("widget/checkbox_selected"),
-                ResourceLocation.withDefaultNamespace("widget/checkbox"),
-                ResourceLocation.withDefaultNamespace("widget/checkbox_selected_highlighted"),
-                ResourceLocation.withDefaultNamespace("widget/checkbox_highlighted")
+                Identifier.withDefaultNamespace("widget/checkbox_selected"),
+                Identifier.withDefaultNamespace("widget/checkbox"),
+                Identifier.withDefaultNamespace("widget/checkbox_selected_highlighted"),
+                Identifier.withDefaultNamespace("widget/checkbox_highlighted")
         );
         private final PatternEntry parent;
 

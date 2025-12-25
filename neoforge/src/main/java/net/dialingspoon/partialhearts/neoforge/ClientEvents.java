@@ -3,7 +3,7 @@ package net.dialingspoon.partialhearts.neoforge;
 import net.dialingspoon.partialhearts.PartialHearts;
 import net.dialingspoon.partialhearts.gui.PatternListScreen;
 import net.minecraft.client.Minecraft;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -28,7 +28,7 @@ public class ClientEvents {
 
         @SubscribeEvent
         public static void registerClientReloadListener(AddClientReloadListenersEvent event) {
-            event.addListener(ResourceLocation.fromNamespaceAndPath(PartialHearts.MOD_ID, "reload_listener"), new ResourceReloadListener());
+            event.addListener(Identifier.fromNamespaceAndPath(PartialHearts.MOD_ID, "reload_listener"), new ResourceReloadListener());
         }
     }
 }

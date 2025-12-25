@@ -12,7 +12,7 @@ import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
@@ -57,7 +57,7 @@ public class PatternEditScreen extends Screen {
         topOffset = 50;
         leftOffset = (this.width - (GRID_SIZE * BUTTON_SIZE)) / 2;
 
-        ImageWidget infoSprite = ImageWidget.sprite(5, 5, ResourceLocation.fromNamespaceAndPath(PartialHearts.MOD_ID, "info"));
+        ImageWidget infoSprite = ImageWidget.sprite(5, 5, Identifier.fromNamespaceAndPath(PartialHearts.MOD_ID, "info"));
         infoSprite.setPosition((font.width(title) + width) / 2 + 2, 2);
         infoSprite.setTooltip(Tooltip.create(Component.translatable("pattern_edit_screen.info")));
         this.addRenderableWidget(infoSprite);
@@ -66,10 +66,10 @@ public class PatternEditScreen extends Screen {
         this.nameField.setMaxLength(100);
         this.addRenderableWidget(this.nameField);
 
-        WidgetSprites sprites = new WidgetSprites(ResourceLocation.fromNamespaceAndPath(PartialHearts.MOD_ID, "scroll_left"), ResourceLocation.fromNamespaceAndPath(PartialHearts.MOD_ID, "scroll_left_highlighted"));
+        WidgetSprites sprites = new WidgetSprites(Identifier.fromNamespaceAndPath(PartialHearts.MOD_ID, "scroll_left"), Identifier.fromNamespaceAndPath(PartialHearts.MOD_ID, "scroll_left_highlighted"));
         this.addRenderableWidget(new ArrowButton(width / 2 - 6 * BUTTON_SIZE - 32, topOffset + 4 * BUTTON_SIZE - 16, 32, 32, sprites, b -> decrementSpriteIndex()));
 
-        sprites = new WidgetSprites(ResourceLocation.fromNamespaceAndPath(PartialHearts.MOD_ID, "scroll_right"), ResourceLocation.fromNamespaceAndPath(PartialHearts.MOD_ID, "scroll_right_highlighted"));
+        sprites = new WidgetSprites(Identifier.fromNamespaceAndPath(PartialHearts.MOD_ID, "scroll_right"), Identifier.fromNamespaceAndPath(PartialHearts.MOD_ID, "scroll_right_highlighted"));
         this.addRenderableWidget(new ArrowButton(width / 2 + 6 * BUTTON_SIZE, topOffset + 4 * BUTTON_SIZE - 16, 32, 32, sprites, b -> incrementSpriteIndex()));
 
         this.buttons = new ArrayList<>();
@@ -302,8 +302,8 @@ public class PatternEditScreen extends Screen {
         }
 
         @Override
-        public void renderWidget(GuiGraphics guiGraphics, int i, int j, float f) {
-            ResourceLocation resourceLocation = this.sprites.get(this.isActive(), this.isHovered && mouseDown);
+        protected void renderContents(GuiGraphics guiGraphics, int i, int j, float f) {
+            Identifier resourceLocation = this.sprites.get(this.isActive(), this.isHovered && mouseDown);
             guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, resourceLocation, this.getX(), this.getY(), this.width, this.height);
         }
     }
