@@ -2,7 +2,7 @@ package net.dialingspoon.partialhearts.gui;
 
 import net.dialingspoon.partialhearts.PartialHearts;
 import net.minecraft.client.gui.Gui;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.*;
 import net.minecraft.client.gui.narration.NarratedElementType;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
@@ -280,17 +280,17 @@ public class PatternEditScreen extends Screen {
     }
 
     @Override
-    public void render(GuiGraphics gg, int mouseX, int mouseY, float partialTicks) {
+    public void extractRenderState(final GuiGraphicsExtractor graphics, final int mouseX, final int mouseY, final float a) {
         Gui.HeartType heartType = backgroundSprites.get(spriteIndex / 4);
         boolean hardcore = ((spriteIndex) / 2) % 2 == 1;
         boolean blinking = (spriteIndex % 2) == 1;
-        gg.blitSprite(RenderPipelines.GUI_TEXTURED, heartType.getSprite(hardcore, false, blinking), leftOffset, topOffset, GRID_SIZE*BUTTON_SIZE, GRID_SIZE*BUTTON_SIZE);
+        graphics.blitSprite(RenderPipelines.GUI_TEXTURED, heartType.getSprite(hardcore, false, blinking), leftOffset, topOffset, GRID_SIZE*BUTTON_SIZE, GRID_SIZE*BUTTON_SIZE);
 
         for (Renderable renderable : this.renderables) {
-            renderable.render(gg, mouseX, mouseY, partialTicks);
+            renderable.extractRenderState(graphics, mouseX, mouseY, a);
         }
-        gg.drawCenteredString(this.font, this.title, this.width / 2, 5, 0xFFFFFFFF);
-        this.nameField.render(gg, mouseX, mouseY, partialTicks);
+        graphics.centeredText(this.font, this.title, this.width / 2, 5, 0xFFFFFFFF);
+        this.nameField.extractRenderState(graphics, mouseX, mouseY, a);
     }
 
     public class ArrowButton extends Button {
@@ -302,9 +302,9 @@ public class PatternEditScreen extends Screen {
         }
 
         @Override
-        protected void renderContents(GuiGraphics guiGraphics, int i, int j, float f) {
+        protected void extractContents(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
             Identifier resourceLocation = this.sprites.get(this.isActive(), this.isHovered && mouseDown);
-            guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, resourceLocation, this.getX(), this.getY(), this.width, this.height);
+            graphics.blitSprite(RenderPipelines.GUI_TEXTURED, resourceLocation, this.getX(), this.getY(), this.width, this.height);
         }
     }
 
@@ -334,7 +334,7 @@ public class PatternEditScreen extends Screen {
         }
 
         @Override
-        public void renderWidget(GuiGraphics gg, int mouseX, int mouseY, float partialTicks) {
+        protected void extractWidgetRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
             int color = 0x80808080;
 
             int displayNumber = value;
@@ -344,14 +344,14 @@ public class PatternEditScreen extends Screen {
 
             if (displayNumber > 0) color = 0x80404040;
 
-            gg.fill(getX(), getY(), getX() + width, getY() + height, color);
+            graphics.fill(getX(), getY(), getX() + width, getY() + height, color);
 
             if (displayNumber > 0) {
                 String numStr = String.valueOf(displayNumber);
                 int textWidth = PatternEditScreen.this.font.width(numStr);
                 int textX = getX() + (width - textWidth) / 2;
                 int textY = getY() + (height - PatternEditScreen.this.font.lineHeight) / 2;
-                gg.drawString(PatternEditScreen.this.font, numStr, textX, textY, 0xFFFFFFFF, false);
+                graphics.text(PatternEditScreen.this.font, numStr, textX, textY, 0xFFFFFFFF, false);
             }
         }
 

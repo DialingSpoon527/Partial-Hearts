@@ -14,7 +14,7 @@ import net.dialingspoon.partialhearts.PartialHearts;
 import net.dialingspoon.partialhearts.PatternManager;
 import net.dialingspoon.partialhearts.rendering.HeartMaskRenderState;
 import net.minecraft.client.gui.render.GuiRenderer;
-import net.minecraft.client.gui.render.state.GuiElementRenderState;
+import net.minecraft.client.renderer.state.gui.GuiElementRenderState;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -44,7 +44,7 @@ public abstract class GuiRendererMixin {
         return value;
     }
 
-    @WrapOperation(method = "addElementToMesh", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/render/state/GuiElementRenderState;pipeline()Lcom/mojang/blaze3d/pipeline/RenderPipeline;"))
+    @WrapOperation(method = "addElementToMesh", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/state/gui/GuiElementRenderState;pipeline()Lcom/mojang/blaze3d/pipeline/RenderPipeline;"))
     private RenderPipeline sortUniformsAndApplyPipeline(GuiElementRenderState instance, Operation<RenderPipeline> original) {
         if (instance instanceof HeartMaskRenderState heartMaskRenderState) {
             PatternManager.heartUniformQueue.add(heartMaskRenderState);

@@ -2,11 +2,11 @@ package net.dialingspoon.partialhearts.gui;
 
 import com.google.common.collect.ImmutableList;
 import net.dialingspoon.partialhearts.PatternManager;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.util.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.Gui;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.ContainerObjectSelectionList;
@@ -63,9 +63,9 @@ public class PatternListScreen extends Screen {
     }
 
     @Override
-    public void render(GuiGraphics gg, int mouseX, int mouseY, float partialTicks) {
-        super.render(gg, mouseX, mouseY, partialTicks);
-        gg.drawCenteredString(this.font, this.title, this.width / 2, 10, 0xFFFFFFFF);
+    public void extractRenderState(final GuiGraphicsExtractor graphics, final int mouseX, final int mouseY, final float a) {
+        super.extractRenderState(graphics, mouseX, mouseY, a);
+        graphics.centeredText(this.font, this.title, this.width / 2, 10, 0xFFFFFFFF);
     }
 
     @Override
@@ -216,40 +216,40 @@ public class PatternListScreen extends Screen {
         }
 
         @Override
-        public void renderContent(GuiGraphics gg, int mouseX, int mouseY, boolean bl, float partialTick) {
+        public void extractContent(GuiGraphicsExtractor graphics, int mouseX, int mouseY, boolean hovered, float a) {
             int left = this.getContentX();
             int top = this.getContentY();
             int rowWidth = this.getContentWidth();
 
             PatternManager.setSelectedPattern(patterns.get(name));
-            gg.blitSprite(RenderPipelines.GUI_TEXTURED, Gui.HeartType.CONTAINER.getSprite(false, false, false), left - 20, top + 7, 18, 18);
+            graphics.blitSprite(RenderPipelines.GUI_TEXTURED, Gui.HeartType.CONTAINER.getSprite(false, false, false), left - 20, top + 7, 18, 18);
             PatternManager.health = 2 - (((float) ((Util.getMillis() - initTime)) / 500) % 20) / 10;
-            gg.blitSprite(RenderPipelines.GUI_TEXTURED, Gui.HeartType.NORMAL.getSprite(false, false, false), left - 20, top + 7, 18, 18);
+            graphics.blitSprite(RenderPipelines.GUI_TEXTURED, Gui.HeartType.NORMAL.getSprite(false, false, false), left - 20, top + 7, 18, 18);
 
             left += 5;
-            drawScrollableText(gg, font, Component.literal(name), left, top + 5, 160, 20, 0xFFFFFFFF);
+            drawScrollableText(graphics, font, Component.literal(name), left, top + 5, 160, 20, 0xFFFFFFFF);
 
             left += rowWidth /2;
             selectButton.setPosition(left, top);
-            selectButton.render(gg, mouseX, mouseY, partialTick);
+            selectButton.extractRenderState(graphics, mouseX, mouseY, a);
 
             left += rowWidth > 367 ? 30 : rowWidth / 12;
 
             if (!special) {
                 this.editButton.setPosition(left, top);
-                this.editButton.render(gg, mouseX, mouseY, partialTick);
+                this.editButton.extractRenderState(graphics, mouseX, mouseY, a);
                 left += rowWidth > 367 ? 45 : rowWidth / 8;
 
                 this.duplicateButton.setPosition(left, top);
-                this.duplicateButton.render(gg, mouseX, mouseY, partialTick);
+                this.duplicateButton.extractRenderState(graphics, mouseX, mouseY, a);
                 left += rowWidth > 367 ? 65 : (int)(rowWidth / 5.5f);
 
                 this.deleteButton.setPosition(left, top);
-                this.deleteButton.render(gg, mouseX, mouseY, partialTick);
+                this.deleteButton.extractRenderState(graphics, mouseX, mouseY, a);
             }
         }
 
-        protected static void drawScrollableText(GuiGraphics context, Font textRenderer, Component text, int startX, int startY, int width, int height, int color) {
+        protected static void drawScrollableText(GuiGraphicsExtractor graphics, Font textRenderer, Component text, int startX, int startY, int width, int height, int color) {
             int endX = startX + width;
             int endY = startY + height;
             int i = textRenderer.width(text);
@@ -264,11 +264,11 @@ public class PatternListScreen extends Screen {
                 double e = Math.max(l * 0.5, 3.0);
                 double f = Math.sin(1.5707963267948966 * Math.cos(6.283185307179586 * d / e)) / 2.0 + 0.5;
                 double g = Mth.lerp(f, 0.0, l);
-                context.enableScissor(startX, startY, endX, endY);
-                context.drawString(textRenderer, text, startX - (int)g, j, color);
-                context.disableScissor();
+                graphics.enableScissor(startX, startY, endX, endY);
+                graphics.text(textRenderer, text, startX - (int)g, j, color);
+                graphics.disableScissor();
             } else {
-                context.drawString(textRenderer, text, startX, j, color);
+                graphics.text(textRenderer, text, startX, j, color);
             }
         }
 
@@ -321,8 +321,8 @@ public class PatternListScreen extends Screen {
         }
 
         @Override
-        protected void renderWidget(GuiGraphics guiGraphics, int i, int j, float f) {
-            guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, this.sprites.get(patternList.getSelected() == parent, this.isHovered), this.getX(), this.getY(), this.width, this.height);
+        protected void extractWidgetRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
+            graphics.blitSprite(RenderPipelines.GUI_TEXTURED, this.sprites.get(patternList.getSelected() == parent, this.isHovered), this.getX(), this.getY(), this.width, this.height);
         }
 
         @Override

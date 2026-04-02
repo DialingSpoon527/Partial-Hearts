@@ -1,7 +1,7 @@
 {
   "required": true,
   "package": "net.dialingspoon.partialhearts.mixin",
-  "compatibilityLevel": "JAVA_21",
+  "compatibilityLevel": "JAVA_25",
   "minVersion": "0.8",
   "client": [
     "GuiGraphicsMixin",
@@ -11,8 +11,5 @@
   "injectors": {
     "defaultRequire": 1
   },
-  "mixins": [
-    "overflowingbars.OverflowingHealthBarRendererMixin"
-  ],
   "plugin": "net.dialingspoon.partialhearts.mixin.PartialHeartsMixinPlugin"
 }

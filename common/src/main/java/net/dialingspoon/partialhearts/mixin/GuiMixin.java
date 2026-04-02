@@ -4,7 +4,7 @@ import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import net.dialingspoon.partialhearts.PatternManager;
 import net.minecraft.client.gui.Gui;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
@@ -14,7 +14,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(Gui.class)
+@Mixin(value = Gui.class)
 public abstract class GuiMixin {
     @Shadow
     @Nullable protected abstract Player getCameraPlayer();
@@ -25,16 +25,16 @@ public abstract class GuiMixin {
     @Unique
     private boolean partialhearts$blinkingCalled = false;
 
-    @WrapOperation(method = "renderHearts", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/Gui;renderHeart(Lnet/minecraft/client/gui/GuiGraphics;Lnet/minecraft/client/gui/Gui$HeartType;IIZZZ)V", ordinal = 1))
-    private void prepareAbsorptionMask(Gui instance, GuiGraphics guiGraphics, Gui.HeartType heartType, int heartX, int heartY, boolean hardcore, boolean blinking, boolean half, Operation<Void> original) {
+    @WrapOperation(method = "extractHearts", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/Gui;extractHeart(Lnet/minecraft/client/gui/GuiGraphicsExtractor;Lnet/minecraft/client/gui/Gui$HeartType;IIZZZ)V", ordinal = 1))
+    private void prepareAbsorptionMask(Gui instance, GuiGraphicsExtractor guiGraphics, Gui.HeartType heartType, int heartX, int heartY, boolean hardcore, boolean blinking, boolean half, Operation<Void> original) {
         if (partialhearts$aborptionFirst) {
             partialhearts$aborptionFirst = false;
             PatternManager.health = getCameraPlayer().getAbsorptionAmount();
         }
         original.call(instance, guiGraphics, heartType, heartX, heartY, hardcore, blinking, false);
     }
-    @WrapOperation(method = "renderHearts", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/Gui;renderHeart(Lnet/minecraft/client/gui/GuiGraphics;Lnet/minecraft/client/gui/Gui$HeartType;IIZZZ)V", ordinal = 2))
-    private void prepareFlashingMask(Gui instance, GuiGraphics guiGraphics, Gui.HeartType heartType, int heartX, int heartY, boolean hardcore, boolean blinking, boolean half, Operation<Void> original) {
+    @WrapOperation(method = "extractHearts", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/Gui;extractHeart(Lnet/minecraft/client/gui/GuiGraphicsExtractor;Lnet/minecraft/client/gui/Gui$HeartType;IIZZZ)V", ordinal = 2))
+    private void prepareFlashingMask(Gui instance, GuiGraphicsExtractor guiGraphics, Gui.HeartType heartType, int heartX, int heartY, boolean hardcore, boolean blinking, boolean half, Operation<Void> original) {
         if (partialhearts$first) {
             partialhearts$first = false;
             partialhearts$blinkingCalled = true;
@@ -42,8 +42,8 @@ public abstract class GuiMixin {
         }
         original.call(instance, guiGraphics, heartType, heartX, heartY, hardcore, blinking, false);
     }
-    @WrapOperation(method = "renderHearts", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/Gui;renderHeart(Lnet/minecraft/client/gui/GuiGraphics;Lnet/minecraft/client/gui/Gui$HeartType;IIZZZ)V", ordinal = 3))
-    private void prepareHeartMask(Gui instance, GuiGraphics guiGraphics, Gui.HeartType heartType, int heartX, int heartY, boolean hardcore, boolean blinking, boolean half, Operation<Void> original) {
+    @WrapOperation(method = "extractHearts", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/Gui;extractHeart(Lnet/minecraft/client/gui/GuiGraphicsExtractor;Lnet/minecraft/client/gui/Gui$HeartType;IIZZZ)V", ordinal = 3))
+    private void prepareHeartMask(Gui instance, GuiGraphicsExtractor guiGraphics, Gui.HeartType heartType, int heartX, int heartY, boolean hardcore, boolean blinking, boolean half, Operation<Void> original) {
         if (!partialhearts$blinkingCalled) {
             if (partialhearts$first) {
                 partialhearts$first = false;
@@ -53,8 +53,8 @@ public abstract class GuiMixin {
         }
     }
 
-    @Inject(method = "renderHearts", at = @At("TAIL"))
-    public void resetFirstHeartTrackers(GuiGraphics guiGraphics, Player player, int i, int j, int k, int l, float f, int m, int n, int o, boolean bl, CallbackInfo ci) {
+    @Inject(method = "extractHearts", at = @At("TAIL"))
+    public void resetFirstHeartTrackers(GuiGraphicsExtractor guiGraphics, Player player, int i, int j, int k, int l, float f, int m, int n, int o, boolean bl, CallbackInfo ci) {
         partialhearts$first = true;
         partialhearts$aborptionFirst = true;
         partialhearts$blinkingCalled = false;
