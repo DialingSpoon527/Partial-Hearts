@@ -54,7 +54,8 @@ dependencies {
     api(include("com.electronwill.night-config:core:${nightconfig_version}"))
     api(include("com.electronwill.night-config:toml:${nightconfig_version}"))
 
-    //compileOnly("curse.maven:overflowing-bars-852662:${rootProject.overflowingbars_fabric}")
+    compileOnly("curse.maven:colorful-hearts-854213:${rootProject.colorfulhearts_fabric}")
+    compileOnly("curse.maven:overflowing-bars-852662:${rootProject.overflowingbars_fabric}")
 
     implementation("com.terraformersmc:modmenu:${project.modmenu_version}")
 }

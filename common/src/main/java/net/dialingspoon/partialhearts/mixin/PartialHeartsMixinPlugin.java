@@ -22,12 +22,8 @@ public class PartialHeartsMixinPlugin implements IMixinConfigPlugin {
     public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
         if (mixinClassName.contains("partialhearts.mixin.colorful"))
             return PlatformSpecific.isModLoaded("colorfulhearts");
-        if (mixinClassName.contains("partialhearts.mixin.armorpointspp"))
-            return PlatformSpecific.isModLoaded("armorpointspp");
         if (mixinClassName.contains("partialhearts.mixin.overflowingbars"))
             return PlatformSpecific.isModLoaded("overflowingbars");
-        if (mixinClassName.contains("partialhearts.mixin.immediatelyfast"))
-            return PlatformSpecific.isModLoaded("immediatelyfast");
 
         return true;
     }
