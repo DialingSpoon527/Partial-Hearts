@@ -12,6 +12,10 @@
     "defaultRequire": 1
   },
   "mixins": [
+    "colorful.ColorfulHeartMixin",
+    "colorful.ColorfulHeartRendererMixin",
+    "colorful.ColorfulHeartUtilsMixin",
+    "colorful.ColorfulSpriteHeartDrawingMixin",
     "overflowingbars.OverflowingHealthBarRendererMixin"
   ],
   "plugin": "net.dialingspoon.partialhearts.mixin.PartialHeartsMixinPlugin"
