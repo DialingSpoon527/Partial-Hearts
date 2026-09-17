@@ -4,6 +4,7 @@
   "compatibilityLevel": "JAVA_21",
   "minVersion": "0.8",
   "client": [
+    "CoreShadersMixin",
     "GuiGraphicsMixin",
     "GuiMixin",
     "ScreenAccessor",
@@ -13,6 +14,10 @@
     "defaultRequire": 1
   },
   "mixins": [
+    "colorful.ColorfulHeartMixin",
+    "colorful.ColorfulHeartRendererMixin",
+    "colorful.ColorfulHeartUtilsMixin",
+    "colorful.ColorfulSpriteHeartDrawingMixin",
     "overflowingbars.OverflowingHealthBarRendererMixin"
   ],
   "plugin": "net.dialingspoon.partialhearts.mixin.PartialHeartsMixinPlugin"

@@ -1,0 +1,12 @@
+{
+  "required": true,
+  "package": "net.dialingspoon.partialhearts.fabric.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "minVersion": "0.8",
+  "client": [
+    "GuiMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

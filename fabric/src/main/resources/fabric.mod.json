@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "id": "partialhearts",
+  "version": "${version}",
+  "name": "Partial Hearts",
+  "description": "Exact health displayed with fractions of a heart.",
+  "authors": [
+    "DialingSpoon"
+  ],
+  "contact": {
+    "issues": "https://github.com/DialingSpoon527/Partial-Hearts/issues",
+    "sources": "https://github.com/DialingSpoon527/Partial-Hearts"
+  },
+  "license": "MIT",
+  "icon": "assets/partialhearts/icon.png",
+  "environment": "client",
+  "accessWidener": "partialhearts.accesswidener",
+  "entrypoints": {
+    "client": [
+      "net.dialingspoon.partialhearts.fabric.PartialHeartsFabric"
+    ],
+    "modmenu": [
+      "net.dialingspoon.partialhearts.fabric.ModMenuCompat"
+    ]
+  },
+  "mixins": [
+    "partialhearts.mixins.json",
+    "partialhearts.fabric.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.16.9",
+    "minecraft": ">1.21.3  <1.21.5",
+    "java": ">=21",
+    "fabric-api": "*"
+  }
+}
